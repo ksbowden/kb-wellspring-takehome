@@ -1,0 +1,14 @@
+{
+  "name": "Wellspring Take-Home",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "concurrently \"npm run start:server\" \"npm run start:react\"",
+    "start:server": "cd server && node server.js",
+    "start:react": "cd client && npm run dev"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
