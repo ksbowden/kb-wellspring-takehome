@@ -5,7 +5,19 @@ Thanks for taking the time to review my submission! Working on this assignment w
 To run it:
 
 ```
+// Install concurrently
 npm install
+
+/// Install deps for the client
+cd client
+npm install
+
+// Install deps for the server
+cd ../server
+npm install
+
+// Run the app!
+cd ..
 npm run start
 ```
 
