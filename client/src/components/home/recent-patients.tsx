@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import {
   Card,
   CardHeader,
@@ -14,23 +14,18 @@ import { AppContext, DispatchContext } from '../../state/app-context';
 import { ActionType } from '../../state/app-reducer';
 import { View } from '../../state/view';
 import PatientSummary from './patient-summary';
-import { Patient } from '../../state/patient';
 
 function RecentPatientsCard() {
   const { patients } = useContext(AppContext);
   const dispatch = useContext(DispatchContext);
-  const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
 
-  useEffect(() => {
-    setFilteredPatients(
-      patients
-        .sort(
-          (a, b) =>
-            new Date(b.lastCheckIn).getTime() -
-            new Date(a.lastCheckIn).getTime()
-        )
-        .slice(0, 7) // let's show a 7-patient preview)
-    );
+  const filteredPatients = useMemo(() => {
+    return [...patients]
+      .sort(
+        (a, b) =>
+          new Date(b.lastCheckIn).getTime() - new Date(a.lastCheckIn).getTime()
+      )
+      .slice(0, 7); // let's show a 7-patient preview)
   }, [patients]);
 
   const onClickViewAll = useCallback(() => {

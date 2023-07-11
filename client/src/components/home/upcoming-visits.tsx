@@ -1,4 +1,4 @@
-import { useContext, useState, useCallback, useEffect } from 'react';
+import { useContext, useState, useCallback, useMemo } from 'react';
 import {
   Card,
   CardHeader,
@@ -14,7 +14,6 @@ import {
 
 import { AppContext } from '../../state/app-context';
 import UpcomingVisit from './upcoming-visit';
-import { Appointment } from '../../state/appointment';
 
 enum DateFilter {
   'Today',
@@ -34,35 +33,30 @@ const buttonTextColors = {
 
 function UpcomingVisitsCard() {
   const [dateFilter, setDateFilter] = useState(DateFilter.Today);
-  const [filteredAppointments, setFilteredAppointments] = useState<
-    Appointment[]
-  >([]);
   const { appointments } = useContext(AppContext);
 
-  useEffect(() => {
+  const filteredAppointments = useMemo(() => {
     const todayDate = new Date();
     const tomorrowDate = new Date(Date.now() + 1000 * 60 * 60 * 24);
     const nextWeekDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
 
-    setFilteredAppointments(
-      appointments
-        .filter((appointment) => {
-          const appDate = new Date(appointment.appointmentDate);
-          switch (dateFilter) {
-            case DateFilter.Today:
-              return todayDate.toDateString() === appDate.toDateString();
-            case DateFilter.Tomorrow:
-              return tomorrowDate.toDateString() === appDate.toDateString();
-            case DateFilter.ThisWeek:
-              return (
-                Date.parse(nextWeekDate.toDateString()) -
-                  Date.parse(appDate.toDateString()) <=
-                1000 * 60 * 60 * 24 * 7
-              );
-          }
-        })
-        .slice(0, 7)
-    );
+    return [...appointments]
+      .filter((appointment) => {
+        const appDate = new Date(appointment.appointmentDate);
+        switch (dateFilter) {
+          case DateFilter.Today:
+            return todayDate.toDateString() === appDate.toDateString();
+          case DateFilter.Tomorrow:
+            return tomorrowDate.toDateString() === appDate.toDateString();
+          case DateFilter.ThisWeek:
+            return (
+              Date.parse(nextWeekDate.toDateString()) -
+                Date.parse(appDate.toDateString()) <=
+              1000 * 60 * 60 * 24 * 7
+            );
+        }
+      })
+      .slice(0, 7);
   }, [appointments, dateFilter]);
 
   const getTextColor = useCallback(
